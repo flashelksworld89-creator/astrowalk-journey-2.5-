@@ -1,7 +1,7 @@
 {
-  "name": "astrowalk-journey-2-5",
+  "name": "astrowalk-journey-2-6-live",
   "private": true,
-  "version": "2.5.0",
+  "version": "2.6.1",
   "type": "module",
   "scripts": {
     "dev": "vite",

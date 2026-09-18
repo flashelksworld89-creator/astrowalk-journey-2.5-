@@ -222,13 +222,14 @@ export async function computeChart(date, lat, lng) {
   };
 }
 
-export async function computeNatalChart(birthDate,birthTime,birthLat,birthLng) {
-  const d = buildBirthDate(birthDate,birthTime);
+export async function computeNatalChart(birthDate,birthTime,birthLat,birthLng,birthUtcOffset='') {
+  const d = buildBirthDate(birthDate,birthTime,birthUtcOffset);
   return computeChart(d,Number(birthLat)||0,Number(birthLng)||0);
 }
 
-export function buildBirthDate(birthDate,birthTime='12:00') {
-  return new Date(`${birthDate}T${birthTime||'12:00'}:00`);
+export function buildBirthDate(birthDate,birthTime='12:00',birthUtcOffset='') {
+  const offset = /^[-+]\d{2}:\d{2}$/.test(String(birthUtcOffset||'')) ? birthUtcOffset : '';
+  return new Date(`${birthDate}T${birthTime||'12:00'}:00${offset}`);
 }
 
 export function calculateHouseLords(natalPlanets,natalAsc) {
@@ -252,6 +253,51 @@ export function calculateHouseLords(natalPlanets,natalAsc) {
       purpose:m.purpose,houseName:m.name,topics:m.topics
     };
   });
+}
+
+
+
+export function calculateTransitNatalAspects(transitPlanets=[],natalPlanets=[],definitions=ASPECT_DEFINITIONS){
+  const result=[];
+  for(const t of transitPlanets.filter(p=>Number.isFinite(p.siderealLon))){
+    for(const n of natalPlanets.filter(p=>Number.isFinite(p.siderealLon))){
+      const separation=Math.abs(((t.siderealLon-n.siderealLon+540)%360)-180);
+      let best=null;
+      for(const def of definitions){
+        const delta=Math.abs(separation-def.angle);
+        if(delta<=def.orb && (!best || delta<best.orbDelta)) best={...def,orbDelta:delta};
+      }
+      if(best) result.push({
+        type:best.type, angle:best.angle, orb:Number(best.orbDelta.toFixed(2)),
+        transitId:t.id, transitName:t.name, natalId:n.id, natalName:n.name
+      });
+    }
+  }
+  return result;
+}
+
+export function calculateTransitHouseAspects(transitPlanets=[],houseCusps=[],definitions=ASPECT_DEFINITIONS){
+  const result=[];
+  transitPlanets.filter(p=>Number.isFinite(p.siderealLon)).forEach(t=>{
+    houseCusps.forEach((cusp,i)=>{
+      const separation=Math.abs(((t.siderealLon-cusp+540)%360)-180);
+      let best=null;
+      for(const def of definitions){
+        const delta=Math.abs(separation-def.angle);
+        if(delta<=Math.min(def.orb,4) && (!best || delta<best.orbDelta)) best={...def,orbDelta:delta};
+      }
+      if(best) result.push({type:best.type,angle:best.angle,orb:Number(best.orbDelta.toFixed(2)),transitId:t.id,transitName:t.name,house:i+1,cusp});
+    });
+  });
+  return result;
+}
+
+export function destinationZoneFromBearing(chart,bearing){
+  if(!chart || !Number.isFinite(bearing)) return null;
+  const longitude=norm(chart.asc + bearing - 90);
+  const house=Math.floor(norm(longitude-chart.asc)/30)+1;
+  const signData=getSignData(longitude);
+  return {longitude,house,...signData,nakshatra:getNakshatra(longitude)};
 }
 
 export function getHousesRuledByPlanet(houseLords,planetId) {

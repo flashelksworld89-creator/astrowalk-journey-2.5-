@@ -1,25 +1,38 @@
 import { useEffect, useState } from 'react';
 import MissionSetup from './components/MissionSetup';
 import MissionView from './components/MissionView';
+import KeywordManager from './components/KeywordManager';
 
 export default function App() {
+  const params=new URLSearchParams(window.location.search);
+  if(params.get('admin')==='keywords') return <div className="app"><KeywordManager/></div>;
+
   const [screen,setScreen] = useState('setup');
-  const [mission,setMission] = useState(
-    ()=>JSON.parse(localStorage.getItem('astrowalk_last_mission')||'null')
-  );
+  const [mission,setMission] = useState(()=>JSON.parse(localStorage.getItem('astrowalk_last_mission')||'null'));
   const [gps,setGps] = useState(null);
+  const [gpsError,setGpsError] = useState('');
 
   useEffect(() => {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      setGpsError('This browser does not support device location.');
+      return;
+    }
     const id = navigator.geolocation.watchPosition(
-      pos => setGps({
-        lat:pos.coords.latitude,
-        lng:pos.coords.longitude,
-        accuracy:pos.coords.accuracy,
-        label:`GPS · ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`
-      }),
-      ()=>{},
-      {enableHighAccuracy:true,maximumAge:3000,timeout:15000}
+      pos => {
+        const c=pos.coords;
+        setGps({
+          lat:c.latitude,
+          lng:c.longitude,
+          accuracy:c.accuracy,
+          speed:Number.isFinite(c.speed)?c.speed:null,
+          heading:Number.isFinite(c.heading)?c.heading:null,
+          timestamp:pos.timestamp||Date.now(),
+          label:`GPS · ${c.latitude.toFixed(5)}, ${c.longitude.toFixed(5)}`
+        });
+        setGpsError('');
+      },
+      err => setGpsError(err?.message||'Location permission is unavailable.'),
+      {enableHighAccuracy:true,maximumAge:1500,timeout:15000}
     );
     return ()=>navigator.geolocation.clearWatch(id);
   },[]);
@@ -30,13 +43,8 @@ export default function App() {
     setScreen('mission');
   };
 
-  return (
-    <div className="app">
-      {screen==='setup' ? (
-        <MissionSetup initial={mission} gps={gps} onStart={startMission}/>
-      ) : (
-        <MissionView mission={mission} gps={gps} onBack={()=>setScreen('setup')}/>
-      )}
-    </div>
-  );
+  return <div className="app">{screen==='setup'
+    ? <MissionSetup initial={mission} gps={gps} gpsError={gpsError} onStart={startMission}/>
+    : <MissionView mission={mission} gps={gps} gpsError={gpsError} onBack={()=>setScreen('setup')}/>
+  }</div>;
 }

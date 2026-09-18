@@ -113,3 +113,23 @@ label{display:block;color:#9aa7bc;font-size:10px;margin-top:7px}.segmented{displ
   .scale-note{display:none}
   .scale-row{grid-template-columns:1fr 86px}
 }
+
+/* v2.6 interactive compass + prediction focus */
+.setup-step .section-title b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid rgba(244,200,66,.5);color:#f4c842;font-family:Inter,sans-serif;font-size:11px}
+.prediction-focus{min-height:150px}.prediction-focus p{font-size:12px;line-height:1.65;color:#d7deeb;margin:0}
+.map-wheel-overlay{left:50%;bottom:50%;transform:translate(-50%,50%);width:min(62vw,500px);height:min(62vw,500px);display:grid;place-items:center;background:transparent;border-radius:50%;backdrop-filter:none;pointer-events:auto}
+.map-wheel-overlay .clean-wheel{width:100%}.map-wheel-overlay .wheel-canvas.compact{width:100%;max-width:500px;filter:drop-shadow(0 0 2px rgba(0,0,0,.45))}
+.wheel-card{background:radial-gradient(circle,rgba(5,8,22,.52),rgba(5,8,22,.88));overflow:hidden}
+.wheel-canvas{touch-action:manipulation}.wheel-key{max-width:560px}
+.keyword-admin{max-width:900px}.keyword-textarea{min-height:280px;margin:10px 0;resize:vertical}.keyword-json{min-height:340px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;resize:vertical}
+@media(max-width:720px){.map-wheel-overlay{width:min(88vw,440px);height:min(88vw,440px);transform:translate(-50%,50%)}.mission-map-wrap{min-height:520px}.prediction-focus{min-height:120px}}
+
+
+/* v2.6.1 live journey tracking */
+.location-source{display:flex;align-items:center;gap:6px;color:#94a3b8;font-size:10px;margin-top:7px}
+.tracking-panel{background:rgba(5,7,20,.88);border:1px solid rgba(244,200,66,.24);border-radius:13px;padding:9px 10px;backdrop-filter:blur(8px)}
+.tracking-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px}.tracking-head strong{display:flex;align-items:center;gap:5px;color:#f4c842;font-family:Cinzel,serif}.tracking-live,.tracking-off{font-size:9px;border-radius:999px;padding:3px 6px}.tracking-live{color:#b9efc0;background:rgba(69,180,95,.12);border:1px solid rgba(69,180,95,.28)}.tracking-off{color:#f5b4b4;background:rgba(190,70,70,.10);border:1px solid rgba(190,70,70,.25)}
+.tracking-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:7px}.tracking-modes button{display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:8px;padding:7px 5px;font-size:9px}.tracking-modes button.active{border-color:rgba(244,200,66,.5);background:rgba(244,200,66,.12);color:#f4c842}
+.tracking-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#8f9bb0;font-size:8px;margin-top:6px}.tracking-meta span{display:flex;align-items:center;gap:4px}.tracking-note{color:#727f94;font-size:8px;line-height:1.35;margin-top:5px}.tracking-error{color:#f5a4a4;font-size:8px;margin-top:5px}
+.map-tracking-overlay{position:absolute;z-index:36;left:12px;bottom:12px;width:min(360px,calc(100% - 24px));pointer-events:auto}.map-tracking-overlay .tracking-panel{background:rgba(5,7,20,.82)}
+@media(max-width:720px){.map-tracking-overlay{left:8px;bottom:8px;width:calc(100% - 16px)}.tracking-note{display:none}.tracking-modes button{padding:7px 3px}}

@@ -1,98 +1,36 @@
-# AstroWalk Journey 2.5
+# AstroWalk Journey 2.6.1 — Live Journey Tracking
 
-This build extends 2.4 with a geographic-scale zodiac compass for walking and driving.
+This revision keeps the 2.6 natal + transit + route prediction engine and adds live movement behavior. Walking and driving modes follow continuous device GPS on the map while expensive astrology/prediction recalculation is throttled to meaningful movement (about 12 m walking or 50 m driving, with a timed fallback). Static mode keeps a manually chosen origin fixed. The blue map point is the live device position; the smaller gold point is the last position used for the astrology/prediction calculation.
 
-## New in 2.5
-- Adjustable wheel radius in feet, yards, miles, meters, or kilometers.
-- Quick presets: 250 ft, 500 ft, 1/4 mi, 1/2 mi, 1 mi, 5 mi.
-- Map zoom follows the selected geographic radius while astronomical calculations remain unchanged.
-- Zodiac wheel is centered over the user/map center and rendered more transparently so streets remain readable.
-- All 27 nakshatra divisions remain visible on the map wheel.
-- Planet glyphs are plotted by exact sidereal longitude, which places them in their calculated transiting nakshatra positions.
-- Sidereal conjunction, sextile, square, trine, quincunx, and opposition lines are drawn inside the wheel.
-- Cardinal N/E/S/W markers are included, with ASC anchored to East/right.
-- Private terminology/prediction layer from 2.4 remains intact.
+# AstroWalk Journey 2.6 — Natal Transit Route Engine
 
-## Important separation
-The geographic radius only controls how much real-world map area is shown. It never changes the Lahiri sidereal planets, houses, ASC/DSC, nakshatras, or aspects.
+This build combines four inputs for journey interpretation:
+1. Birth chart (sidereal Lahiri)
+2. Current/selected-time sidereal transits
+3. Current geographic location
+4. Destination geographic bearing/zone
 
-# AstroWalk Journey 2.4 — Private Interpretation Layer
+## New in 2.6
+- Refined translucent compass wheel with fine degree ticks, zodiac, all 27 nakshatras, houses, planet glyphs, aspect lines, N/E/S/W, ASC and destination-bearing marker.
+- Planet glyphs and house sectors are clickable and open their own forecast panel.
+- Transit-to-natal aspects and transit-to-natal-house-cusp aspects are calculated.
+- Destination bearing maps to a real compass/house zone: East≈House 1, South≈House 4, West≈House 7, North≈House 10.
+- Birth UTC offset is required for more reliable natal ASC/house timing.
+- Private keyword layer remains server-side via PLANET_VOCAB_JSON.
+- Private keyword preparation page: `https://YOUR-SITE.vercel.app/?admin=keywords` (there is no link to this page in the normal user UI).
+- Geographic wheel radius remains adjustable independently from astrology calculations.
 
-This build continues from AstroWalk Journey 2.3 and keeps the Swiss Ephemeris / Lahiri sidereal calculation engine intact.
+## Environment variables
+`VITE_GOOGLE_MAPS_API_KEY` — browser Google Maps key; restrict it by HTTP referrer and API in Google Cloud.
 
-## What changed in 2.4
+`PLANET_VOCAB_JSON` — private server-side vocabulary JSON. Do NOT prefix this with VITE_.
 
-- Added sidereal aspect detection (conjunction, sextile, square, trine, quincunx, opposition).
-- Added a server-only private planetary terminology layer through `/api/interpret`.
-- Private terms are combined with the calculated planet, sidereal sign, nakshatra/pada, house, condition and aspects.
-- The browser receives only the selected interpretation themes, not the complete private terminology bank.
-- Outcome feedback already stores the themes selected for each reading, which can later be used to compare Yes / No / Unsure results.
-- Repaired the Google map component so this version builds cleanly before the adjustable map-wheel scale work is added.
+## Private keyword workflow
+Open `/?admin=keywords` on your deployed site. Upload/paste CSV using:
+`planet,category,term,weight`
 
-## Astronomy remains separate from interpretation
+Supported categories: `people`, `events`, `qualities`, `places`, `objects`.
+Click **Copy Vercel JSON**, then paste the result into the Vercel `PLANET_VOCAB_JSON` environment variable and redeploy.
 
-Swiss Ephemeris determines the chart. The private terminology does not move a planet, change a house, change a nakshatra, or alter ASC/DSC. It only influences the text interpretation after the astronomical facts have been calculated.
-
-## Entering your private vocabulary in bulk
-
-The easiest format is CSV. Open:
-
-`scripts/planet-vocab-template.csv`
-
-Columns:
-
-- `planet`: sun, moon, mercury, venus, mars, jupiter, saturn, uranus, neptune, pluto, rahu, ketu
-- `category`: people, events, qualities, places, objects
-- `term`: your private word or phrase
-- `weight`: 0.00 through 1.00
-
-Example:
-
-```csv
-planet,category,term,weight
-mars,events,machinery activity,0.90
-mars,events,competition,0.80
-mars,objects,tools,0.75
-mars,qualities,urgency,0.85
-```
-
-You may add hundreds or thousands of rows.
-
-### Convert the CSV to JSON
-
-Run:
-
-```bash
-npm run vocab:convert
-```
-
-This creates:
-
-`scripts/planet-vocab-output.json`
-
-That output file is ignored by Git so it is less likely to be committed accidentally.
-
-## Put the vocabulary into Vercel privately
-
-1. Open your Vercel project.
-2. Go to **Settings → Environment Variables**.
-3. Add `PLANET_VOCAB_JSON`.
-4. Open `scripts/planet-vocab-output.json` on your computer.
-5. Copy the entire JSON contents into the value field.
-6. Save and redeploy.
-
-Do **not** prefix this variable with `VITE_`. Vite-prefixed environment variables can be compiled into browser-side code.
-
-The repository includes generic fallback vocabulary so the app still runs before you add your own terminology. Your custom vocabulary should be kept in the Vercel server environment rather than committed to the public repository.
-
-## Google Maps
-
-Set this Vercel environment variable:
-
-`VITE_GOOGLE_MAPS_API_KEY`
-
-Enable the Maps JavaScript API and Geocoding API in Google Cloud and restrict the key to your AstroWalk domain.
-
-## Next visual upgrade
-
-The next layer is the adjustable geographic wheel radius discussed for the map overlay: feet, yards, miles, meters and kilometers. That scale will affect only how much real-world map area the wheel covers. It will not change the sidereal chart or the aspect calculations.
+## Prediction model
+Predictions are generated from sidereal transit placement + current transit aspects + transit-to-natal-planet aspects + transit-to-natal-house-cusp aspects + natal house rulership + destination compass/house zone + private planet vocabulary. They are interpretive forecasts, not guaranteed events.
