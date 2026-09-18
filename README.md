@@ -1,4 +1,4 @@
-# AstroWalk Journey 2.6.1 — Live Journey Tracking
+# AstroWalk Journey 2.6.2 — Live Journey Tracking
 
 This revision keeps the 2.6 natal + transit + route prediction engine and adds live movement behavior. Walking and driving modes follow continuous device GPS on the map while expensive astrology/prediction recalculation is throttled to meaningful movement (about 12 m walking or 50 m driving, with a timed fallback). Static mode keeps a manually chosen origin fixed. The blue map point is the live device position; the smaller gold point is the last position used for the astrology/prediction calculation.
 
@@ -34,3 +34,11 @@ Click **Copy Vercel JSON**, then paste the result into the Vercel `PLANET_VOCAB_
 
 ## Prediction model
 Predictions are generated from sidereal transit placement + current transit aspects + transit-to-natal-planet aspects + transit-to-natal-house-cusp aspects + natal house rulership + destination compass/house zone + private planet vocabulary. They are interpretive forecasts, not guaranteed events.
+
+
+## 2.6.2 additions
+- Restores the map compass overlay with one authoritative CSS layer.
+- Shows both current Transit ASC and the natal ASC with exact sidereal sign/degree.
+- Keeps the transit ASC anchored to East while the wheel rotates with the changing Ascendant.
+- Replaces aspect-list prose with event-oriented forecasts: possible events, people/roles, constructive expression, challenging expression, and inspectable triggers.
+- Forecasts combine planetary karakas, natal house rulership, transit-to-natal contacts, transit-to-natal house cusp contacts, current transit aspects, destination zone, and private terminology.

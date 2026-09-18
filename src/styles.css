@@ -133,3 +133,35 @@ label{display:block;color:#9aa7bc;font-size:10px;margin-top:7px}.segmented{displ
 .tracking-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#8f9bb0;font-size:8px;margin-top:6px}.tracking-meta span{display:flex;align-items:center;gap:4px}.tracking-note{color:#727f94;font-size:8px;line-height:1.35;margin-top:5px}.tracking-error{color:#f5a4a4;font-size:8px;margin-top:5px}
 .map-tracking-overlay{position:absolute;z-index:36;left:12px;bottom:12px;width:min(360px,calc(100% - 24px));pointer-events:auto}.map-tracking-overlay .tracking-panel{background:rgba(5,7,20,.82)}
 @media(max-width:720px){.map-tracking-overlay{left:8px;bottom:8px;width:calc(100% - 16px)}.tracking-note{display:none}.tracking-modes button{padding:7px 3px}}
+
+/* v2.6.2 authoritative compass overlay + forecast presentation */
+.mission-map-wrap,.fullscreen-map-wrap{isolation:isolate}
+.map-wheel-overlay{
+  position:absolute!important;
+  z-index:80!important;
+  left:50%!important;
+  top:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:min(72%,560px)!important;
+  height:auto!important;
+  aspect-ratio:1/1;
+  transform:translate(-50%,-50%)!important;
+  transform-origin:center!important;
+  display:grid!important;
+  place-items:center!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:50%;
+  backdrop-filter:none!important;
+  pointer-events:none!important;
+  opacity:1!important;
+}
+.map-wheel-overlay .clean-wheel,.map-wheel-overlay .overlay-wheel{width:100%!important;opacity:1!important;pointer-events:none!important}
+.map-wheel-overlay .wheel-canvas.compact{display:block!important;width:100%!important;max-width:none!important;height:auto!important;opacity:.94!important;visibility:visible!important;pointer-events:auto!important;filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))}
+.transit-asc-dot,.natal-asc-dot,.dest-dot{width:9px;height:9px;border-radius:50%;display:inline-block;border:1px solid #fff}
+.transit-asc-dot{background:#60a5fa}.natal-asc-dot{background:#e879f9}.dest-dot{background:#f4c842}
+.prediction-focus p{font-size:11px;line-height:1.55}
+.forecast-detail{display:grid;gap:10px}.forecast-headline{font-weight:700;color:#f3f6fb;margin:0}.forecast-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.forecast-grid>div{padding:9px;border-radius:11px;background:rgba(0,0,0,.16);border:1px solid rgba(255,255,255,.055)}.forecast-grid b{font-size:10px;color:#f4c842}.forecast-grid p{margin:4px 0 0}.forecast-positive{border-color:rgba(134,239,172,.18)!important}.forecast-challenge{border-color:rgba(252,165,165,.18)!important}.forecast-destination{margin:0;color:#cbd5e1}.forecast-detail details{font-size:10px;color:#9aa7bc}.forecast-detail summary{cursor:pointer;color:#f4c842}.forecast-detail ul{padding-left:18px;margin:7px 0}.forecast-detail li{margin:4px 0}
+@media(max-width:720px){.map-wheel-overlay{width:min(91vw,500px)!important}.forecast-grid{grid-template-columns:1fr}}
+.natal-loaded{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 9px;padding:7px 9px;border-radius:10px;background:rgba(232,121,249,.07);border:1px solid rgba(232,121,249,.18);font-size:10px;color:#d8ddea}.natal-loaded b{color:#f5d0fe}.natal-loaded span:last-child{margin-left:auto;font-variant-numeric:tabular-nums}
