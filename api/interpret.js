@@ -128,6 +128,15 @@ export default async function handler(req,res){
     const vocab=readVocabulary();
     const planetPredictions={};for(const p of planets)planetPredictions[p.id]=planetForecast(p,body,vocab);
     const housePredictions={};for(let h=1;h<=12;h++)housePredictions[h]=houseForecast(h,body,vocab);
-    return res.status(200).json({summary:summaryForecast(body,planetPredictions),planetPredictions,housePredictions,destinationZone:body.destinationZone||{},transitNatalAspects:body.transitNatalAspects||[],modelVersion:'event-karaka-route-4'});
+    const natalUsage={
+      natalAsc:Number(body.natalAsc),
+      natalPlanetCount:Array.isArray(body.natalPlanets)?body.natalPlanets.length:0,
+      natalHouseCount:Array.isArray(body.natalHouseCusps)?body.natalHouseCusps.length:0,
+      houseLordCount:Array.isArray(body.houseLords)?body.houseLords.length:0,
+      transitNatalAspectCount:Array.isArray(body.transitNatalAspects)?body.transitNatalAspects.length:0,
+      transitNatalHouseAspectCount:Array.isArray(body.natalHouseAspects)?body.natalHouseAspects.length:0,
+      verified:Boolean(Number.isFinite(Number(body.natalAsc))&&Array.isArray(body.natalPlanets)&&body.natalPlanets.length>=9&&Array.isArray(body.natalHouseCusps)&&body.natalHouseCusps.length===12)
+    };
+    return res.status(200).json({summary:summaryForecast(body,planetPredictions),planetPredictions,housePredictions,destinationZone:body.destinationZone||{},transitNatalAspects:body.transitNatalAspects||[],natalUsage,modelVersion:'event-karaka-route-5-natal-audit'});
   }catch(e){return res.status(500).json({error:'Interpretation failed'})}
 }

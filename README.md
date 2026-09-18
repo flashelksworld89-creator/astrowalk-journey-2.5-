@@ -1,3 +1,7 @@
+# AstroWalk Journey 2.6.3 — Compass Visibility + Natal Audit
+
+This build hard-separates the Google Map, compass, and control z-layers and adds visible natal-chart verification. The interpretation API now returns a natalUsage audit showing how many natal planets, houses, house lords, transit-to-natal aspects, and transit-to-natal-house contacts were used.
+
 # AstroWalk Journey 2.6.2 — Live Journey Tracking
 
 This revision keeps the 2.6 natal + transit + route prediction engine and adds live movement behavior. Walking and driving modes follow continuous device GPS on the map while expensive astrology/prediction recalculation is throttled to meaningful movement (about 12 m walking or 50 m driving, with a timed fallback). Static mode keeps a manually chosen origin fixed. The blue map point is the live device position; the smaller gold point is the last position used for the astrology/prediction calculation.
